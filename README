@@ -1,3 +1,10 @@
+Secure Smart Cam Transfer (SSCXfer) is a fairly brutal fork
+of the Vidiom app. It has been paired down to just be
+a multi-path uploader, to which we are adding Tor/Orbot,
+SQLCipher db encryption and throttling support.
+
+----------------------------------------------------------------------
+
 Vidiom 0.6.14 - 31st March 2011 
 Video capture and web video publishing for Android devices.
 Author: Andrew Nicholson

@@ -15,40 +15,31 @@
 -->
 
 <resources>
- 	<!--  Twitter strings -->
-    <string name="launching_twitter_authorisation_come_back_and_tweet_after_you_have_done_this_">Launching Twitter authorisation. Come back and tweet after you have done this.</string>
-    <string name="video_is_not_uploaded_yet_no_hosted_url_available_">Video is not uploaded yet. No hosted URL available.</string>
-	<string name="tweeted_ok">Tweeted video URL successfully</string>
-	<string name="tweeting_starting">Contacting twitter.com</string>
-	<string name="tweeting_deauth">Removing twitter authorisation</string>
-	<string name="twitter_authorisation_successfully">Twitter authorisation successful</string>
 	
 	<!--  Email strings -->
-	<string name="automatic_email_from">noreply@vidiom.mobi</string>
-	<string name="vidiom_automatic_email">Vidiom automatic email</string>
+	<string name="automatic_email_from">noreply@guardianproject.info</string>
+	<string name="vidiom_automatic_email">SSCXfer automatic email</string>
 	
 	
 
 	<!--  Notification words -->
 	
     <string name="url_of_hosted_video_is_">URL of  hosted video is  </string>
-    <string name="uploaded_by_">Uploaded by Vidiom - your wandering eye : http://vidiom.net.au/ </string>
-    <string name="upload_to_facebook_failed_">Upload to Facebook failed.</string>
-    <string name="upload_to_facebook_succeeded_">Upload to Facebook succeeded.</string>
+    <string name="uploaded_by_">Uploaded by SSCXfer - your wandering eye : http://vidiom.net.au/ </string>
     <string name="upload_to_videobin_org_failed_">Upload to videobin.org failed.</string>
     <string name="upload_to_videobin_org_succeeded_">Upload to videobin.org succeeded.</string>
     <string name="upload_to_ftp_host_succeeded_">Upload to FTP host succeeded.</string>
     <string name="upload_to_ftp_host_failed_">Upload to FTP host failed.</string>
     <string name="upload_to_youtube_host_succeeded_">Upload to Youtube succeeded.</string>
     <string name="upload_to_youtube_host_failed_">Upload to Youtube failed.</string>
-    <string name="auto_publishing_to_youtube_com">Auto publishing to youtube.com</string>
-    <string name="auto_publishing_to_facebook_com">Auto publishing to facebook.com</string>
+    <string name="auto_publishing_to_youtube_com">Auto publishing to youtube.com</string>    
     <string name="auto_publishing_to_ftp_server">Auto publishing to FTP server</string>
     <string name="auto_publishing_to_videobin_org">Auto publishing to videobin.org</string>
 	<string name="starting_upload">Starting upload of</string>
-
+	<string name="video_is_not_uploaded_yet_no_hosted_url_available_">Video is not uploaded yet</string>
+	
 	<!--  SD card file paths and file names -->
-	<string name="rootSDcardFolder">/Vidiom</string>
+	<string name="rootSDcardFolder">/SSCXfer</string>
 	<string name="defaultVideoFilenamePrefix">video</string>
 	
 	<!--  videobin.org details -->
@@ -59,7 +50,6 @@
     <string name="http_videobin_org_add">http://videobin.org/add</string>
     
  
-    
     <string name="maxFilesizePreferenceDefault">10240</string>
     <string name="maxFilesizePreferenceSummary">Maximum video filesize in kilobytes. Zero for unlimited.</string>
     <string name="maxFilesizePreferenceTitle">Video filesize</string>
@@ -75,9 +65,7 @@
     <string name="filenameConventionPreferenceTitle">Video filename style</string>
     <string name="filenameConventionPreferenceDialogTitle">Video filename style</string>
     <string name="videobinPreferenceSummary">Automatically publish video to videobin.org?</string>
-    <string name="videobinPreferenceTitle">Videobin.org</string>
-    <string name="facebookPreferenceSummary">Automatically publish video to facebook.com?</string>
-    <string name="facebookPreferenceTitle">Facebook</string>
+    <string name="videobinPreferenceTitle">Videobin.org</string>    
     <string name="youtubePreferenceSummary">Automatically publish video to youtube.com?</string>
     <string name="youtubePreferenceTitle">Youtube</string>
     <string name="twitterPreferenceSummary">Automatically publish hosted video URL on twitter.com?</string>
@@ -90,22 +78,21 @@
     <string name="emailTitle">Email Address</string>
    
    <!--  activity titles -->
-    <string name="app_name">Vidiom</string>
+    <string name="app_name">SSCXFer</string>
     <string name="app_description">Your wandering eye.</string>
-    <string name="prefTitle">Vidiom : Preferences</string>
-	<string name="libraryTitle">Vidiom : Video gallery</string>
-	<string name="galleryTitle">Vidiom : Video gallery</string>
+    <string name="prefTitle">SSCXfer : Preferences</string>
+	<string name="libraryTitle">SSCXfer : Video gallery</string>
+	<string name="galleryTitle">SSCXfer : Video gallery</string>
 	
-	<string name="twitterTitle">Vidiom : Authorise Twitter integration</string>
+	<string name="twitterTitle">SSCXfer : Authorise Twitter integration</string>
 	<string name="twitter_auth">Authorise twitter</string>
 	<string name="twitter_deauth">De-authorise twitter</string>
 	
-	<string name="about_this">Vidiom - Video capture and web video publishing tool. VERSION - http://vidiom.net.au \nAuthor: Andy Nicholson.\nCopyright 2011 Infinite Recursion Pty. Ltd.\nhttp://www.infiniterecursion.com.au </string>
+	<string name="about_this">SSCXfer (forked from Vidiom) - Video capture and web video publishing tool. ORIGINAL VERSION - http://vidiom.net.au \nAuthor: Andy Nicholson.\nCopyright 2011 Infinite Recursion Pty. Ltd.\nhttp://www.infiniterecursion.com.au </string>
 	<string name="licenses">Show Licenses</string>
-	<string name="third_party_licenses">This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nThis program is distributed in the hope that it will be useful,but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with this program.  If not, see http://www.gnu.org/licenses\n\n\nVidiom contains third-party code under separate copyrights:\nCopyright 2010 Google Inc.\nCode modified from ytd-android - http://code.google.com/p/youtube-direct &amp; available under the license http://www.apache.org/licenses/LICENSE-2.0\n\nCopyright 2010 Stickman studio Contributers.\nCode modified from stickman-android - http://code.google.com/p/stickman-android &amp; available under the license http://www.apache.org/licenses/LICENSE-2.0\n\nCopyright 2010 Facebook Inc.\nCode modified from Facebook SDK for Android - https://github.com/facebook/facebook-android-sdk &amp; available under the license http://www.apache.org/licenses/LICENSE-2.0.html\n\nCopyright (c) 2007-2011, Yusuke Yamamoto\nCode modified from Twitter4J - http://twitter4j.org/en/index.html &amp; available under the BSD license http://twitter4j.org/en/index.html#license\n\nCopyright 2011 Matthias Käppler\nCode included from Signpost - http://code.google.com/p/oauth-signpost/ &amp; available under the license http://www.apache.org/licenses/LICENSE-2.0.html</string>
+	<string name="third_party_licenses">This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nThis program is distributed in the hope that it will be useful,but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with this program.  If not, see http://www.gnu.org/licenses\n\n\nSSCXfer contains third-party code under separate copyrights:\nCopyright 2010 Google Inc.\nCode modified from ytd-android - http://code.google.com/p/youtube-direct &amp; available under the license http://www.apache.org/licenses/LICENSE-2.0\n\nCopyright 2010 Stickman studio Contributers.\nCode modified from stickman-android - http://code.google.com/p/stickman-android &amp; available under the license http://www.apache.org/licenses/LICENSE-2.0\n\nCopyright 2010 Facebook Inc.\nCode modified from Facebook SDK for Android - https://github.com/facebook/facebook-android-sdk &amp; available under the license http://www.apache.org/licenses/LICENSE-2.0.html\n\nCopyright (c) 2007-2011, Yusuke Yamamoto\nCode modified from Twitter4J - http://twitter4j.org/en/index.html &amp; available under the BSD license http://twitter4j.org/en/index.html#license\n\nCopyright 2011 Matthias Käppler\nCode included from Signpost - http://code.google.com/p/oauth-signpost/ &amp; available under the license http://www.apache.org/licenses/LICENSE-2.0.html</string>
 	 
-	 
-	<string name="notification_title">Vidiom</string>
+	<string name="notification_title">SSCXfer</string>
 	 
 	<!--  dialog words -->
     <string name="camera_failed">The camera failed to start recording. Sorry.</string>
@@ -126,9 +113,6 @@
 	 
 	<string name="uploadprogresstext">Uploading video in progress.</string>
 
-	
-	<string name="welcome">Welcome to Vidiom!\nUse the Menu key to start and stop video recording, set your Preferences and go to the Gallery.\nPlease set your email address in the Preferences menu to receive email notifications of your uploaded videos.</string>
-	<string name="welcome2">Please note, the video camera captures MP4 (H263/AMR-NB) video in Landscape orientation. To upload to Youtube, you must associate your google account with Youtube at http://youtube.com/.\nGet support at http://vidiom.mobi/</string>
 	
 	
 	<!-- menu -->
@@ -157,17 +141,16 @@
 	<string name="rename_video">Title/Description</string>
 	<string name="menu_send_hosted_url_via_email">Email Hosted URL</string>
 	<string name="menu_launch_hosted_url">View Hosted URL</string>
-	<string name="menu_tweet">Tweet video URL</string>
 	
 	<string name="no_videos_in_library">You have no videos in the library.</string>
 	
 	<!--  Library list item  -->
-	<string name="text1intro">Filename : </string>
-	<string name="text2intro">Duration (seconds) : </string>
-	<string name="text3intro">Date Filmed : </string>
-	<string name="text4intro">Hosted details : </string>
-	<string name="text5intro">Title : </string>
-	<string name="text6intro">Description : </string>
+	<string name="text1intro">Filename: </string>
+	<string name="text2intro">Duration: </string>
+	<string name="text3intro">Filmed: </string>
+	<string name="text4intro">Hosted: </string>
+	<string name="text5intro">Title: </string>
+	<string name="text6intro">Description: </string>
 	
 	
 	<string-array name="filenameConventionTypes">
