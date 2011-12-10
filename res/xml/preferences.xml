@@ -7,11 +7,14 @@
 	android:inputType="textEmailAddress" android:summary="@string/emailPreferenceSummary" android:key="emailPreference">
 </EditTextPreference>
 
+<CheckBoxPreference android:summary="@string/prefUseProxy" android:key="prefUseProxy" 
+	android:title="@string/prefUseProxyTitle" android:value="true"/>
 
+<!-- 
 <EditTextPreference android:summary="@string/defaultFTPhostPreferenceSummary" android:key="defaultFTPhostPreference" 
 	android:title="@string/defaultFTPhostPreferenceTitle" android:inputType="textUri"></EditTextPreference>
 <EditTextPreference android:key="defaultFTPusernamePreference" android:title="@string/defaultFTPusernamePreferenceTitle"></EditTextPreference>
 <EditTextPreference android:key="defaultFTPpasswordPreference" android:title="@string/defaultFTPpasswordPreferenceTitle" android:inputType="textPassword"></EditTextPreference>
-
+ -->
 
 </PreferenceScreen>

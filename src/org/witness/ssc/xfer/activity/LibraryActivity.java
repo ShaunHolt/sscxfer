@@ -49,6 +49,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RemoteViews;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -99,7 +101,7 @@ public class LibraryActivity extends ListActivity implements VidiomActivity {
 	
 
 	private static final String TAG = "RoboticEye-Library";
-	private static final int NOTIFICATION_ID = 2;
+	private static final int NOTIFICATION_ID = 42;
 	private PublishingUtils pu;
 
 	private Handler handler;
@@ -123,7 +125,8 @@ public class LibraryActivity extends ListActivity implements VidiomActivity {
 	private Resources res;
 
 	private boolean importPreference;
-	
+
+	ProgressBar progressBar;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -141,20 +144,6 @@ public class LibraryActivity extends ListActivity implements VidiomActivity {
 		thread_youtube = null;
 
 	
-	}
-
-	/**
-	 * 
-	 * We get this callback after the facebook SSO
-	 * 
-	 */
-
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		
-		
-		
 	}
 
 	private class ImporterThread implements Runnable {
@@ -361,7 +350,7 @@ public class LibraryActivity extends ListActivity implements VidiomActivity {
 				+ " a._id = b.sdrecord_id "
 				+ " ORDER BY a.created_datetime DESC ";
 */
-		String join_sql = " SELECT a.filename as filename , a.filepath as filepath, a.length_secs as length_secs , a.created_datetime as created_datetime, a._id as _id,"
+		String join_sql = " SELECT a.filename as filename , a.filepath as filepath, a.created_datetime as created_datetime, a._id as _id,"
 				+ " b.host_uri as host_uri , b.host_video_url as host_video_url FROM "
 				+ " videofiles a LEFT OUTER JOIN hosts b ON "
 				+ " a._id = b.sdrecord_id "
@@ -418,7 +407,7 @@ public class LibraryActivity extends ListActivity implements VidiomActivity {
 
 		String[] from = new String[] {
 				DatabaseHelper.SDFileRecord.FILENAME,
-				DatabaseHelper.SDFileRecord.LENGTH_SECS,
+			//	DatabaseHelper.SDFileRecord.LENGTH_SECS,
 				DatabaseHelper.SDFileRecord.CREATED_DATETIME,
 
 				// Linked HOSTs details
@@ -428,9 +417,10 @@ public class LibraryActivity extends ListActivity implements VidiomActivity {
 //				DatabaseHelper.SDFileRecord.DESCRIPTION,
 				DatabaseHelper.SDFileRecord.FILEPATH, };
 
-		int[] to = new int[] { android.R.id.text1, android.R.id.text2,
-				R.id.text3, R.id.text4, 
-				//R.id.text5, R.id.text6,
+		int[] to = new int[] { android.R.id.text1, 
+				//android.R.id.text2,
+				R.id.text3, R.id.text4,
+				// , R.id.text5, R.id.text6,
 				R.id.videoThumbnailimageView };
 
 		listAdapter = new VideoFilesSimpleCursorAdapter(this,
@@ -533,7 +523,7 @@ public class LibraryActivity extends ListActivity implements VidiomActivity {
 
 		menu.add(0, MENU_ITEM_7, 0, R.string.menu_youtube);
 
-		menu.add(0, MENU_ITEM_6, 0, R.string.menu_ftp);
+	//	menu.add(0, MENU_ITEM_6, 0, R.string.menu_ftp);
 
 		menu.add(0, MENU_ITEM_4, 0, R.string.menu_send_via_email);
 
@@ -805,6 +795,47 @@ public class LibraryActivity extends ListActivity implements VidiomActivity {
 				+ moviefilename);
 
 		mainapp.setUploading();
+	}
+	
+	private Notification notification;
+	
+	public void showProgress (String txt, int percent)
+	{
+		  // configure the intent
+        
+        final NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(
+                getApplicationContext().NOTIFICATION_SERVICE);
+        
+        if (notification == null)
+        {
+            notificationManager.cancel(NOTIFICATION_ID);
+
+        	Intent intent = new Intent(this, LibraryActivity.class);
+            final PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+
+	        // configure the notification
+	        notification = new Notification(R.drawable.icon, txt, System
+	                .currentTimeMillis());
+	        notification.flags = notification.flags | Notification.FLAG_ONGOING_EVENT;
+	        notification.contentView = new RemoteViews(getApplicationContext().getPackageName(), R.layout.download_progress);
+	        notification.contentIntent = pendingIntent;
+	        notification.contentView.setImageViewResource(R.id.status_icon, R.drawable.icon);
+        }
+
+        notification.contentView.setTextViewText(R.id.status_text, res.getString(R.string.now_uploading) + " "
+				+ moviefilename);
+        notification.contentView.setProgressBar(R.id.status_progress, 100, percent, false);
+
+        // inform the progress bar of updates in progress
+        notificationManager.notify(NOTIFICATION_ID, notification);
+        
+        if (percent == 100)
+        {
+            notificationManager.cancel(NOTIFICATION_ID);
+
+        	notification = null;
+        }
+
 	}
 
 	public void finishedUploading(boolean success) {

@@ -21,4 +21,6 @@ public abstract interface VidiomActivity {
 	public abstract void finishedUploading(boolean success);
 
 	public void createNotification(String notification_text);
+	
+	public abstract void showProgress (String text, int percent);
 }

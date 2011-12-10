@@ -1,7 +1,5 @@
 package org.witness.ssc.xfer.utils;
 
-import info.guardianproject.net.http.SocksHttpClient;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.Closeable;
@@ -12,11 +10,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -28,10 +24,7 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -40,28 +33,27 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.params.ConnRoutePNames;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.witness.ssc.xfer.R;
 import org.witness.ssc.xfer.activity.VidiomActivity;
 import org.witness.ssc.xfer.sslemail.SSLEmailSender;
+import org.witness.ssc.xfer.utils.CustomMultiPartEntity.ProgressListener;
 import org.witness.ssc.xfer.utils.GoogleAuthoriser.AuthorizationListener;
 import org.xml.sax.SAXException;
 
@@ -93,16 +85,16 @@ import android.util.Log;
 
 public class PublishingUtils {
 
-	private static final String TAG = "RoboticEye-PublishingUtils";
+	private static final String TAG = "sscxfer";
 
 	private File folder;
 	private Resources res;
 	private DBUtils dbutils;
 
-	private static final String INITIAL_UPLOAD_URL = "http://uploads.gdata.youtube.com/resumable/feeds/api/users/default/uploads";
+	private static final String INITIAL_UPLOAD_URL = "https://uploads.gdata.youtube.com/resumable/feeds/api/users/default/uploads";
 	private static final String DEFAULT_VIDEO_CATEGORY = "News";
 	private static final String DEFAULT_VIDEO_TAGS = "mobile";
-	private static final String YOUTUBE_PLAYER_URL = "http://www.youtube.com/watch?feature=player_profilepage&v=";
+	private static final String YOUTUBE_PLAYER_URL = "https://www.youtube.com/watch?feature=player_profilepage&v=";
 
 	private static final int MAX_RETRIES = 5;
 	private static final int BACKOFF = 4; // base of exponential backoff
@@ -116,9 +108,16 @@ public class PublishingUtils {
 	private String tags = null;
 	private GoogleAuthoriser authorizer;
 	
+	//for Tor
 	private final static String PROXY_HOST = "127.0.0.1";
 	private final static int PROXY_PORT_HTTP = 8118;
-
+	private final static int PROXY_PORT_SOCKS = 9050;
+	
+	private boolean useProxy = true;
+			
+	private int percentUploaded = 0;
+	private long totalLength = 0;
+	
 	public PublishingUtils(Resources res, DBUtils dbutils) {
 
 		this.res = res;
@@ -170,9 +169,12 @@ public class PublishingUtils {
 
 				HttpClient client = new DefaultHttpClient();
 				
-        		HttpHost proxy = new HttpHost(PROXY_HOST, PROXY_PORT_HTTP);
-        		client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
-        		
+				if (useProxy)
+				{
+					HttpHost proxy = new HttpHost(PROXY_HOST, PROXY_PORT_HTTP);
+					client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+				}
+				
 				client.getParams().setParameter(
 						CoreProtocolPNames.PROTOCOL_VERSION,
 						HttpVersion.HTTP_1_1);
@@ -187,8 +189,24 @@ public class PublishingUtils {
 
 				}
 				HttpPost post = new HttpPost(url);
-				MultipartEntity entity = new MultipartEntity(
-						HttpMultipartMode.BROWSER_COMPATIBLE);
+				CustomMultiPartEntity entity = new CustomMultiPartEntity(
+						HttpMultipartMode.BROWSER_COMPATIBLE, new ProgressListener ()
+						{
+							int lastPercent = 0;
+							
+							@Override
+							public void transferred(long num) {
+								
+								percentUploaded = (int)(((float)num) / ((float)totalLength)  * 99f);
+								Log.d(TAG, "percent uploaded: " + percentUploaded + " - " + num + " / " + totalLength);
+								if (lastPercent != percentUploaded)
+								{
+									((VidiomActivity) activity).showProgress("uploading...", percentUploaded);
+									lastPercent = percentUploaded;
+								}
+							}
+							
+						});
 
 				File file = new File(video_absolutepath);
 				entity.addPart(res.getString(R.string.video_bin_API_videofile),
@@ -226,6 +244,8 @@ public class PublishingUtils {
 				}
 
 				post.setEntity(entity);
+				
+				totalLength = entity.getContentLength();
 
 				// Here we go!
 				String response = null;
@@ -938,14 +958,14 @@ public class PublishingUtils {
 		String[] strs = dbutils
 				.getTitleAndDescriptionFromID(new String[] { Long
 						.toString(sdrecord_id) });
-		// add our branding to the description.
+		
+		
 		String uploadUrl = uploadMetaData(activity, handler, file
-				.getAbsolutePath(), strs[0], strs[1] + "\n"
-				+ activity.getString(R.string.uploaded_by_), true);
+				.getAbsolutePath(), strs[0], strs[1], true);
 
-		Log.d(TAG, "uploadUrl=" + uploadUrl + " youtube account name is "
-				+ this.youTubeName);
-		Log.d(TAG, String.format("Client token : %s ", this.clientLoginToken));
+		//Log.d(TAG, "uploadUrl=" + uploadUrl + " youtube account name is "
+			//	+ this.youTubeName);
+		//Log.d(TAG, String.format("Client token : %s ", this.clientLoginToken));
 
 		this.currentFileSize = file.length();
 		this.totalBytesUploaded = 0;
@@ -1075,14 +1095,34 @@ public class PublishingUtils {
 			final Handler handler, String filePath, String title,
 			String description, boolean retry) throws IOException {
 		String uploadUrl = INITIAL_UPLOAD_URL;
+		
+		HttpClient client = new DefaultHttpClient();
+		
+		if (useProxy)
+		{
+			HttpHost proxy = new HttpHost(PROXY_HOST, PROXY_PORT_HTTP);
+			client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+		}
+		
+		client.getParams().setParameter(
+				CoreProtocolPNames.PROTOCOL_VERSION,
+				HttpVersion.HTTP_1_1);
 
-		HttpURLConnection urlConnection = getGDataUrlConnection(uploadUrl);
-		urlConnection.setRequestMethod("POST");
-		urlConnection.setDoOutput(true);
-		urlConnection
-				.setRequestProperty("Content-Type", "application/atom+xml");
+		
+		HttpPost post = new HttpPost(uploadUrl);
+		post.addHeader("Authorization", String.format(
+				"GoogleLogin auth=\"%s\"", clientLoginToken));
+		post.addHeader("GData-Version", "2");
+		post.addHeader("X-GData-Key", String.format("key=%s",
+				res.getString(R.string.youtube_dev_key)));
+
+		//HttpURLConnection urlConnection = getGDataUrlConnection(uploadUrl);
+		//urlConnection.setRequestMethod("POST");
+//		urlConnection.setDoOutput(true);
+		post
+				.addHeader("Content-Type", "application/atom+xml");
 		// urlConnection.setRequestProperty("Content-Length", newValue);
-		urlConnection.setRequestProperty("Slug", filePath);
+		post.addHeader("Slug", filePath);
 		String atomData = null;
 
 		String category = DEFAULT_VIDEO_CATEGORY;
@@ -1101,27 +1141,19 @@ public class PublishingUtils {
 		atomData = String.format(template, title, description, category,
 				this.tags);
 
-		OutputStreamWriter outStreamWriter = null;
+		HttpResponse hResp;
 		int responseCode = -1;
 
 		try {
-			outStreamWriter = new OutputStreamWriter(urlConnection
-					.getOutputStream());
-			outStreamWriter.write(atomData);
-			outStreamWriter.close();
 
-			/*
-			 * urlConnection.connect(); InputStream is =
-			 * urlConnection.getInputStream(); BufferedReader in = new
-			 * BufferedReader(new InputStreamReader(is)); String inputLine;
-			 * 
-			 * while ((inputLine = in.readLine()) != null) {
-			 * Log.d(TAG,inputLine); } in.close();
-			 */
-
-			responseCode = urlConnection.getResponseCode();
+			post.setEntity(new StringEntity(atomData));
+		
+			hResp = client.execute(post);
+		
+			responseCode = hResp.getStatusLine().getStatusCode();
 
 			// ERROR LOGGING
+			/*
 			InputStream is = urlConnection.getErrorStream();
 			if (is != null) {
 				Log.e(TAG, " Error stream from Youtube available!");
@@ -1142,7 +1174,7 @@ public class PublishingUtils {
 						Log.d(TAG, "vals:" + s);
 					}
 				}
-			}
+			}*/
 
 		} catch (IOException e) {
 			//
@@ -1152,7 +1184,6 @@ public class PublishingUtils {
 			Log.d(TAG, " Error occured in uploadMetaData! ");
 			e.printStackTrace();
 			responseCode = -1;
-			outStreamWriter = null;
 
 			// Use the handler to execute a Runnable on the
 			// main thread in order to have access to the
@@ -1211,13 +1242,13 @@ public class PublishingUtils {
 
 				throw new IOException(String.format(
 						"response code='%s' (code %d)" + " for %s",
-						urlConnection.getResponseMessage(), responseCode,
-						urlConnection.getURL()));
+						hResp.getStatusLine().getReasonPhrase(), responseCode,
+						post.getURI().toString()));
 
 			}
 		}
 
-		return urlConnection.getHeaderField("Location");
+		return hResp.getHeaders("Location")[0].getValue();
 	}
 
 	private String gdataUpload(File file, String uploadUrl, int start, int end)
@@ -1267,7 +1298,7 @@ public class PublishingUtils {
 			totalRead += bytesRead;
 			this.totalBytesUploaded += bytesRead;
 
-			// double percent = (totalBytesUploaded / currentFileSize) * 99;
+			percentUploaded = (int)(totalBytesUploaded / currentFileSize) * 99;
 
 			/*
 			 * Log.d(TAG, String.format(
