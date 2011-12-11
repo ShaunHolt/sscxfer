@@ -1,14 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android">
-  
+
+
 <EditTextPreference 
-    android:title="@string/emailTitle"
-	android:inputType="textEmailAddress" android:summary="@string/emailPreferenceSummary" android:key="emailPreference">
+    android:title="@string/videobinHost"
+	android:inputType="textUri" android:summary="@string/videobinHostSummary" android:key="videobinHost" android:value="@string/videobinDefault">
 </EditTextPreference>
+  
 
 <CheckBoxPreference android:summary="@string/prefUseProxy" android:key="prefUseProxy" 
 	android:title="@string/prefUseProxyTitle" android:value="true"/>
+
+<EditTextPreference 
+    android:title="@string/proxyHost"
+	android:inputType="textUri" android:summary="@string/proxyHostSummary" android:key="proxyHost" android:value="@string/proxyHostDefault">
+</EditTextPreference>
+
+<EditTextPreference 
+    android:title="@string/proxyPort"
+	android:summary="@string/proxyPortSummary" android:key="proxyPort" android:value="@string/proxyPortDefault">
+</EditTextPreference>
+
 
 <!-- 
 <EditTextPreference android:summary="@string/defaultFTPhostPreferenceSummary" android:key="defaultFTPhostPreference" 

@@ -158,5 +158,14 @@
 	
 	<string name="videobinHost">Videobin Hostname</string>
 	<string name="videobinHostSummary">Set the host for your videobin server (default is videobin.org)</string>
+	<string name="videobinHostDefault">http://videobin.org/</string>
+	
+	<string name="proxyHost">Proxy Host or IP</string>
+	<string name="proxyHostSummary">Set the hostname or IP address for the remote HTTP proxy server</string>
+	<string name="proxyHostDefault">127.0.0.1</string>
+	
+	<string name="proxyPort">Proxy Port</string>
+	<string name="proxyPortSummary">Set the port for the remote HTTP proxy server</string>
+	<string name="proxyPortDefault">8118</string>
 	
 </resources>

@@ -6,6 +6,7 @@
 	<!-- dont publish this to GITHUB -->
 	<string name="automatic_email_username"></string>
 	<!-- dont publish this to GITHUB -->
-	<string name="youtube_dev_key"></string>
+	<string name="youtube_dev_key">AI39si6bBpjPRPsqdlFrvEkoLweKL7QYQS7ijGyVpW4ndzLGnU6Ug0HqDpYPV0WXz38nlnhJ0z_SGnQW9xasXY1XayQOE0MGdQ</string>
 
+	<string name="videobinDefault">https://videobin.org/</string>
 </resources>
