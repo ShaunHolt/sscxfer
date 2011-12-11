@@ -92,7 +92,8 @@ public class PublishingUtils {
 	private File folder;
 	private Resources res;
 	private DBUtils dbutils;
-
+	private Activity mActivity;
+	
 	private static final String INITIAL_UPLOAD_URL = "https://uploads.gdata.youtube.com/resumable/feeds/api/users/default/uploads";
 	private static final String DEFAULT_VIDEO_CATEGORY = "News";
 	private static final String DEFAULT_VIDEO_TAGS = "mobile";
@@ -166,9 +167,6 @@ public class PublishingUtils {
 
 				boolean failed = false;
 				
-				//HttpClient client = new SocksHttpClient(host, port);
-
-
 				HttpClient client = new DefaultHttpClient();
 				
 				if (useProxy)
@@ -200,7 +198,7 @@ public class PublishingUtils {
 							public void transferred(long num) {
 								
 								percentUploaded = (int)(((float)num) / ((float)totalLength)  * 99f);
-								Log.d(TAG, "percent uploaded: " + percentUploaded + " - " + num + " / " + totalLength);
+								//Log.d(TAG, "percent uploaded: " + percentUploaded + " - " + num + " / " + totalLength);
 								if (lastPercent != percentUploaded)
 								{
 									((SSCXferActivity) activity).showProgress("uploading...", percentUploaded);
@@ -1245,6 +1243,9 @@ public class PublishingUtils {
 
 	private String gdataUpload(File file, String uploadUrl, int start, int end, Activity activity)
 			throws IOException {
+		
+		mActivity = activity;
+		
 		int chunk = end - start + 1;
 		int bufferSize = 1024;
 		byte[] buffer = new byte[bufferSize];
@@ -1286,26 +1287,38 @@ public class PublishingUtils {
 		int bytesRead;
 		int totalRead = 0;
 
-		int lastPercent = 0;
+		Thread thread = new Thread ()
+		{
+			
+			public void run ()
+			{
+				int lastPercent = 0;
+				
+				while (lastPercent < 100)
+				{
+					if (lastPercent != percentUploaded)
+					{
+						((SSCXferActivity) mActivity).showProgress("uploading...", percentUploaded);
+						lastPercent = percentUploaded;
+					}
+					
+					try {Thread.sleep(1000);}
+					catch(Exception e){}
+					
+				}
+			}
+		};
+		thread.start();
+		
 		
 		while ((bytesRead = fileStream.read(buffer, 0, bufferSize)) != -1) {
 			outStreamWriter.write(buffer, 0, bytesRead);
 			totalRead += bytesRead;
 			this.totalBytesUploaded += bytesRead;
 
-			percentUploaded = (int)(totalBytesUploaded / currentFileSize) * 99;
+			percentUploaded = (int)(((float)totalBytesUploaded) / ((float)currentFileSize)  * 99f);
 
-			if (lastPercent != percentUploaded)
-			{
-				((SSCXferActivity) activity).showProgress("uploading...", percentUploaded);
-				lastPercent = percentUploaded;
-			}
 			
-			/*
-			 * Log.d(TAG, String.format(
-			 * "fileSize=%f totalBytesUploaded=%f percent=%f", currentFileSize,
-			 * totalBytesUploaded, percent));
-			 */
 
 			if (totalRead == (end - start + 1)) {
 				break;
