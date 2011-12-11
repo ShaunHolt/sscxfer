@@ -117,20 +117,16 @@
 	
 	
 	<!-- menu -->
-	<string name="menu_start_recording">Record</string>
-    <string name="menu_stop_recording">Stop</string>
-    <string name="menu_publish_to_videobin">Publish to Videobin.org</string>
-    <string name="menu_publish_to_facebook">Publish to  Facebook</string>
+    <string name="menu_publish_to_videobin">Upload to Videobin.org</string>
     <string name="menu_send_via_email">Email Video</string>
     <string name="menu_preferences">Preferences</string>
     <string name="menu_about">About</string>
 	<string name="menu_library">Gallery</string>
-	<string name="menu_ftp">Publish via FTP</string>
-	<string name="menu_youtube">Publish to Youtube</string>
+	<string name="menu_youtube">Upload to Youtube</string>
 	<string name="menu_import">Scan for Videos</string>
 
 	<!--  Youtube strings -->
-	<string name="youtube_client_id">Vidiom - your wandering eye</string>
+	<string name="youtube_client_id">SSCXfer</string>
 	<string name="no_email_account_for_youtube">Please set up a google.com email account with which to log into YouTube.</string>
 		
 
@@ -140,18 +136,11 @@
 	<string name="library_menu_play">Play video</string>
 	<string name="cant_show_video">Can not launch video player, sorry!.</string>
 	<string name="rename_video">Title/Description</string>
-	<string name="menu_send_hosted_url_via_email">Email Hosted URL</string>
-	<string name="menu_launch_hosted_url">View Hosted URL</string>
+	<string name="menu_send_hosted_url_via_email">Share Online URL</string>
+	<string name="menu_launch_hosted_url">View Video Online</string>
 	
 	<string name="no_videos_in_library">You have no videos in the library.</string>
 	
-	<!--  Library list item  -->
-	<string name="text1intro">Filename: </string>
-	<string name="text2intro">Duration: </string>
-	<string name="text3intro">Filmed: </string>
-	<string name="text4intro">Hosted: </string>
-	<string name="text5intro">Title: </string>
-	<string name="text6intro">Description: </string>
 	
 	
 	<string-array name="filenameConventionTypes">
@@ -166,5 +155,8 @@
 		
 	<string name="prefUseProxy">HTTP/S Proxy for Tor and other services</string>
 	<string name="prefUseProxyTitle">Use Proxy</string>
+	
+	<string name="videobinHost">Videobin Hostname</string>
+	<string name="videobinHostSummary">Set the host for your videobin server (default is videobin.org)</string>
 	
 </resources>
