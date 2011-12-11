@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
@@ -24,6 +25,9 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -33,14 +37,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.params.ConnRoutePNames;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
@@ -51,7 +53,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.witness.ssc.xfer.R;
-import org.witness.ssc.xfer.activity.VidiomActivity;
+import org.witness.ssc.xfer.activity.SSCXferActivity;
 import org.witness.ssc.xfer.sslemail.SSLEmailSender;
 import org.witness.ssc.xfer.utils.CustomMultiPartEntity.ProgressListener;
 import org.witness.ssc.xfer.utils.GoogleAuthoriser.AuthorizationListener;
@@ -155,7 +157,7 @@ public class PublishingUtils {
 		Log.d(TAG, "doPOSTtoVideoBin starting");
 
 		// Make the progress bar view visible.
-		((VidiomActivity) activity).startedUploading();
+		((SSCXferActivity) activity).startedUploading();
 		final Resources res = activity.getResources();
 
 		Thread t = new Thread(new Runnable() {
@@ -201,7 +203,7 @@ public class PublishingUtils {
 								Log.d(TAG, "percent uploaded: " + percentUploaded + " - " + num + " / " + totalLength);
 								if (lastPercent != percentUploaded)
 								{
-									((VidiomActivity) activity).showProgress("uploading...", percentUploaded);
+									((SSCXferActivity) activity).showProgress("uploading...", percentUploaded);
 									lastPercent = percentUploaded;
 								}
 							}
@@ -279,10 +281,10 @@ public class PublishingUtils {
 							// Indicate back to calling activity the result!
 							// update uploadInProgress state also.
 
-							((VidiomActivity) activity)
+							((SSCXferActivity) activity)
 									.finishedUploading(false);
 
-							((VidiomActivity) activity)
+							((SSCXferActivity) activity)
 									.createNotification(res
 											.getString(R.string.upload_to_videobin_org_failed_));
 						}
@@ -340,8 +342,8 @@ public class PublishingUtils {
 						// Indicate back to calling activity the result!
 						// update uploadInProgress state also.
 
-						((VidiomActivity) activity).finishedUploading(true);
-						((VidiomActivity) activity)
+						((SSCXferActivity) activity).finishedUploading(true);
+						((SSCXferActivity) activity)
 								.createNotification(res
 										.getString(R.string.upload_to_videobin_org_succeeded_));
 
@@ -364,7 +366,7 @@ public class PublishingUtils {
 		Log.d(TAG, "doVideoFTP starting");
 
 		// Make the progress bar view visible.
-		((VidiomActivity) activity).startedUploading();
+		((SSCXferActivity) activity).startedUploading();
 
 		final Resources res = activity.getResources();
 
@@ -411,9 +413,9 @@ public class PublishingUtils {
 							// Update UI
 
 							// Hide the progress bar
-							((VidiomActivity) activity)
+							((SSCXferActivity) activity)
 									.finishedUploading(false);
-							((VidiomActivity) activity)
+							((SSCXferActivity) activity)
 									.createNotification(res
 											.getString(R.string.upload_to_ftp_host_failed_));
 
@@ -475,9 +477,9 @@ public class PublishingUtils {
 							// Update UI
 
 							// Hide the progress bar
-							((VidiomActivity) activity)
+							((SSCXferActivity) activity)
 									.finishedUploading(false);
-							((VidiomActivity) activity)
+							((SSCXferActivity) activity)
 									.createNotification(res
 											.getString(R.string.upload_to_ftp_host_failed_));
 
@@ -539,9 +541,9 @@ public class PublishingUtils {
 							// Update UI
 
 							// Hide the progress bar
-							((VidiomActivity) activity)
+							((SSCXferActivity) activity)
 									.finishedUploading(false);
-							((VidiomActivity) activity)
+							((SSCXferActivity) activity)
 									.createNotification(res
 											.getString(R.string.upload_to_ftp_host_failed_));
 
@@ -596,9 +598,9 @@ public class PublishingUtils {
 							// Update UI
 
 							// Hide the progress bar
-							((VidiomActivity) activity)
+							((SSCXferActivity) activity)
 									.finishedUploading(false);
-							((VidiomActivity) activity)
+							((SSCXferActivity) activity)
 									.createNotification(res
 											.getString(R.string.upload_to_ftp_host_failed_));
 
@@ -632,9 +634,9 @@ public class PublishingUtils {
 							// Update UI
 
 							// Hide the progress bar
-							((VidiomActivity) activity)
+							((SSCXferActivity) activity)
 									.finishedUploading(false);
-							((VidiomActivity) activity)
+							((SSCXferActivity) activity)
 									.createNotification(res
 											.getString(R.string.upload_to_ftp_host_failed_));
 
@@ -659,9 +661,9 @@ public class PublishingUtils {
 							// Update UI
 
 							// Hide the progress bar
-							((VidiomActivity) activity)
+							((SSCXferActivity) activity)
 									.finishedUploading(false);
-							((VidiomActivity) activity)
+							((SSCXferActivity) activity)
 									.createNotification(res
 											.getString(R.string.upload_to_ftp_host_failed_));
 
@@ -686,9 +688,9 @@ public class PublishingUtils {
 							// Update UI
 
 							// Hide the progress bar
-							((VidiomActivity) activity)
+							((SSCXferActivity) activity)
 									.finishedUploading(false);
-							((VidiomActivity) activity)
+							((SSCXferActivity) activity)
 									.createNotification(res
 											.getString(R.string.upload_to_ftp_host_failed_));
 
@@ -713,9 +715,9 @@ public class PublishingUtils {
 							// Update UI
 
 							// Hide the progress bar
-							((VidiomActivity) activity)
+							((SSCXferActivity) activity)
 									.finishedUploading(false);
-							((VidiomActivity) activity)
+							((SSCXferActivity) activity)
 									.createNotification(res
 											.getString(R.string.upload_to_ftp_host_failed_));
 
@@ -766,8 +768,8 @@ public class PublishingUtils {
 						// Indicate back to calling activity the result!
 						// update uploadInProgress state also.
 
-						((VidiomActivity) activity).finishedUploading(true);
-						((VidiomActivity) activity)
+						((SSCXferActivity) activity).finishedUploading(true);
+						((SSCXferActivity) activity)
 								.createNotification(res
 										.getString(R.string.upload_to_ftp_host_succeeded_));
 
@@ -987,7 +989,7 @@ public class PublishingUtils {
 			Log.d(TAG, String.format("start=%s end=%s total=%s", start, end,
 					file.length()));
 			try {
-				videoId = gdataUpload(file, uploadUrl, start, end);
+				videoId = gdataUpload(file, uploadUrl, start, end, activity);
 				fileSize -= uploadChunk;
 				start = end + 1;
 				this.numberOfRetries = 0; // clear this counter as we had a
@@ -1077,8 +1079,8 @@ public class PublishingUtils {
 					// Indicate back to calling activity the result!
 					// update uploadInProgress state also.
 
-					((VidiomActivity) activity).finishedUploading(true);
-					((VidiomActivity) activity)
+					((SSCXferActivity) activity).finishedUploading(true);
+					((SSCXferActivity) activity)
 							.createNotification(res
 									.getString(R.string.upload_to_youtube_host_succeeded_));
 
@@ -1095,34 +1097,14 @@ public class PublishingUtils {
 			final Handler handler, String filePath, String title,
 			String description, boolean retry) throws IOException {
 		String uploadUrl = INITIAL_UPLOAD_URL;
-		
-		HttpClient client = new DefaultHttpClient();
-		
-		if (useProxy)
-		{
-			HttpHost proxy = new HttpHost(PROXY_HOST, PROXY_PORT_HTTP);
-			client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
-		}
-		
-		client.getParams().setParameter(
-				CoreProtocolPNames.PROTOCOL_VERSION,
-				HttpVersion.HTTP_1_1);
 
-		
-		HttpPost post = new HttpPost(uploadUrl);
-		post.addHeader("Authorization", String.format(
-				"GoogleLogin auth=\"%s\"", clientLoginToken));
-		post.addHeader("GData-Version", "2");
-		post.addHeader("X-GData-Key", String.format("key=%s",
-				res.getString(R.string.youtube_dev_key)));
-
-		//HttpURLConnection urlConnection = getGDataUrlConnection(uploadUrl);
-		//urlConnection.setRequestMethod("POST");
-//		urlConnection.setDoOutput(true);
-		post
-				.addHeader("Content-Type", "application/atom+xml");
+		HttpURLConnection urlConnection = getGDataUrlConnection(uploadUrl);
+		urlConnection.setRequestMethod("POST");
+		urlConnection.setDoOutput(true);
+		urlConnection
+				.setRequestProperty("Content-Type", "application/atom+xml");
 		// urlConnection.setRequestProperty("Content-Length", newValue);
-		post.addHeader("Slug", filePath);
+		urlConnection.setRequestProperty("Slug", filePath);
 		String atomData = null;
 
 		String category = DEFAULT_VIDEO_CATEGORY;
@@ -1141,19 +1123,27 @@ public class PublishingUtils {
 		atomData = String.format(template, title, description, category,
 				this.tags);
 
-		HttpResponse hResp;
+		OutputStreamWriter outStreamWriter = null;
 		int responseCode = -1;
 
 		try {
+			outStreamWriter = new OutputStreamWriter(urlConnection
+					.getOutputStream());
+			outStreamWriter.write(atomData);
+			outStreamWriter.close();
 
-			post.setEntity(new StringEntity(atomData));
-		
-			hResp = client.execute(post);
-		
-			responseCode = hResp.getStatusLine().getStatusCode();
+			/*
+			 * urlConnection.connect(); InputStream is =
+			 * urlConnection.getInputStream(); BufferedReader in = new
+			 * BufferedReader(new InputStreamReader(is)); String inputLine;
+			 * 
+			 * while ((inputLine = in.readLine()) != null) {
+			 * Log.d(TAG,inputLine); } in.close();
+			 */
+
+			responseCode = urlConnection.getResponseCode();
 
 			// ERROR LOGGING
-			/*
 			InputStream is = urlConnection.getErrorStream();
 			if (is != null) {
 				Log.e(TAG, " Error stream from Youtube available!");
@@ -1174,7 +1164,7 @@ public class PublishingUtils {
 						Log.d(TAG, "vals:" + s);
 					}
 				}
-			}*/
+			}
 
 		} catch (IOException e) {
 			//
@@ -1184,6 +1174,7 @@ public class PublishingUtils {
 			Log.d(TAG, " Error occured in uploadMetaData! ");
 			e.printStackTrace();
 			responseCode = -1;
+			outStreamWriter = null;
 
 			// Use the handler to execute a Runnable on the
 			// main thread in order to have access to the
@@ -1195,8 +1186,8 @@ public class PublishingUtils {
 					// Indicate back to calling activity the result!
 					// update uploadInProgress state also.
 
-					((VidiomActivity) activity).finishedUploading(false);
-					((VidiomActivity) activity)
+					((SSCXferActivity) activity).finishedUploading(false);
+					((SSCXferActivity) activity)
 							.createNotification(res
 									.getString(R.string.upload_to_youtube_host_failed_));
 
@@ -1232,8 +1223,8 @@ public class PublishingUtils {
 						// Indicate back to calling activity the result!
 						// update uploadInProgress state also.
 
-						((VidiomActivity) activity).finishedUploading(false);
-						((VidiomActivity) activity)
+						((SSCXferActivity) activity).finishedUploading(false);
+						((SSCXferActivity) activity)
 								.createNotification(res
 										.getString(R.string.upload_to_youtube_host_failed_));
 
@@ -1242,16 +1233,17 @@ public class PublishingUtils {
 
 				throw new IOException(String.format(
 						"response code='%s' (code %d)" + " for %s",
-						hResp.getStatusLine().getReasonPhrase(), responseCode,
-						post.getURI().toString()));
+						urlConnection.getResponseMessage(), responseCode,
+						urlConnection.getURL()));
 
 			}
 		}
 
-		return hResp.getHeaders("Location")[0].getValue();
+		return urlConnection.getHeaderField("Location");
 	}
 
-	private String gdataUpload(File file, String uploadUrl, int start, int end)
+
+	private String gdataUpload(File file, String uploadUrl, int start, int end, Activity activity)
 			throws IOException {
 		int chunk = end - start + 1;
 		int bufferSize = 1024;
@@ -1260,7 +1252,7 @@ public class PublishingUtils {
 
 		HttpURLConnection urlConnection = getGDataUrlConnection(uploadUrl);
 
-		
+
 		// some mobile proxies do not support PUT, using X-HTTP-Method-Override
 		// to get around this problem
 		if (isFirstRequest()) {
@@ -1293,6 +1285,9 @@ public class PublishingUtils {
 
 		int bytesRead;
 		int totalRead = 0;
+
+		int lastPercent = 0;
+		
 		while ((bytesRead = fileStream.read(buffer, 0, bufferSize)) != -1) {
 			outStreamWriter.write(buffer, 0, bytesRead);
 			totalRead += bytesRead;
@@ -1300,6 +1295,12 @@ public class PublishingUtils {
 
 			percentUploaded = (int)(totalBytesUploaded / currentFileSize) * 99;
 
+			if (lastPercent != percentUploaded)
+			{
+				((SSCXferActivity) activity).showProgress("uploading...", percentUploaded);
+				lastPercent = percentUploaded;
+			}
+			
 			/*
 			 * Log.d(TAG, String.format(
 			 * "fileSize=%f totalBytesUploaded=%f percent=%f", currentFileSize,
@@ -1386,6 +1387,37 @@ public class PublishingUtils {
 		return null;
 	}
 
+	private HttpURLConnection getGDataUrlConnection(String urlString)
+			throws IOException {
+		URL url = new URL(urlString);
+		
+		if (useProxy)
+		{
+			//url = new URL("http",,,urlString);
+			System.setProperty("http.proxySet", "true");
+			System.setProperty("http.proxyHost", PROXY_HOST);
+			System.setProperty("http.proxyPort", PROXY_PORT_HTTP + "");
+
+		}
+		else
+		{
+			System.clearProperty("http.proxySet");
+			System.clearProperty("http.proxyHost");
+			System.clearProperty("http.proxyPort");
+		}
+		
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		
+		
+		
+		connection.setRequestProperty("Authorization", String.format(
+				"GoogleLogin auth=\"%s\"", clientLoginToken));
+		connection.setRequestProperty("GData-Version", "2");
+		connection.setRequestProperty("X-GData-Key", String.format("key=%s",
+				res.getString(R.string.youtube_dev_key)));
+		return connection;
+	}
+	
 	public boolean isFirstRequest() {
 		return totalBytesUploaded == 0;
 	}
@@ -1487,6 +1519,7 @@ public class PublishingUtils {
 		return null;
 	}
 
+	/*
 	private HttpURLConnection getGDataUrlConnection(String urlString)
 			throws IOException {
 		URL url = new URL(urlString);
@@ -1497,7 +1530,7 @@ public class PublishingUtils {
 		connection.setRequestProperty("X-GData-Key", String.format("key=%s",
 				res.getString(R.string.youtube_dev_key)));
 		return connection;
-	}
+	}*/
 
 	public void getYouTubeAuthTokenWithPermissionAndUpload(
 			final Activity activity, String accountName, final String path,
@@ -1505,7 +1538,7 @@ public class PublishingUtils {
 			final long sdrecord_id) {
 
 		// Make the progress bar view visible.
-		((VidiomActivity) activity).startedUploading();
+		((SSCXferActivity) activity).startedUploading();
 
 		this.youTubeName = accountName;
 
@@ -1534,9 +1567,9 @@ public class PublishingUtils {
 								// Indicate back to calling activity the result!
 								// update uploadInProgress state also.
 
-								((VidiomActivity) activity)
+								((SSCXferActivity) activity)
 										.finishedUploading(false);
-								((VidiomActivity) activity)
+								((SSCXferActivity) activity)
 										.createNotification(res
 												.getString(R.string.upload_to_youtube_host_failed_));
 

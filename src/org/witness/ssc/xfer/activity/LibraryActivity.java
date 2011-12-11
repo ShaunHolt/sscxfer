@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import org.witness.ssc.xfer.R;
-import org.witness.ssc.xfer.VidiomApp;
+import org.witness.ssc.xfer.SSCXferApp;
 import org.witness.ssc.xfer.utils.DBUtils;
 import org.witness.ssc.xfer.utils.DatabaseHelper;
 import org.witness.ssc.xfer.utils.PublishingUtils;
@@ -67,7 +67,7 @@ import android.widget.Toast;
  * http://www.infiniterecursion.com.au
  */
 
-public class LibraryActivity extends ListActivity implements VidiomActivity {
+public class LibraryActivity extends ListActivity implements SSCXferActivity {
 
 	// Database
 	DBUtils dbutils;
@@ -113,7 +113,7 @@ public class LibraryActivity extends ListActivity implements VidiomActivity {
 	private Thread thread_ftp;
 	private Thread thread_youtube;
 
-	private VidiomApp mainapp;
+	private SSCXferApp mainapp;
 
 	private String movieurl;
 	private String moviefilename;
@@ -252,7 +252,7 @@ public class LibraryActivity extends ListActivity implements VidiomActivity {
 	public void onResume() {
 		super.onResume();
 
-		mainapp = (VidiomApp) getApplication();
+		mainapp = (SSCXferApp) getApplication();
 		Log.d(TAG, " onResume ");
 		setContentView(R.layout.library_layout);
 

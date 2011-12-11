@@ -12,7 +12,7 @@ package org.witness.ssc.xfer.activity;
  * http://www.infiniterecursion.com.au
  */
 
-public abstract interface VidiomActivity {
+public abstract interface SSCXferActivity {
 
 	public abstract boolean isUploading();
 
